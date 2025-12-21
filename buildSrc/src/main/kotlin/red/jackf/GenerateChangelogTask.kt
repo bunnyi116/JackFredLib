@@ -10,6 +10,8 @@ import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.TaskAction
 import org.gradle.process.ExecOperations
 import java.io.ByteArrayOutputStream
+import javax.inject.Inject
+import org.gradle.api.tasks.Internal
 
 /**
  * Generates a markdown changelog from a list of commits between two tags.
@@ -17,6 +19,8 @@ import java.io.ByteArrayOutputStream
  * Adapted from TerraformersMC's ferry script
  */
 abstract class GenerateChangelogTask : DefaultTask() {
+    @get:Inject
+    @get:Internal
     abstract val execOperations: Property<ExecOperations>
 
     /**
@@ -94,7 +98,6 @@ abstract class GenerateChangelogTask : DefaultTask() {
             it.commandLine = command
             it.standardOutput = stream
         }
-        val output = stream.toString(Charsets.UTF_8)
         stream.toString().lines().forEach { line ->
             var str = line
             // it starts with quotes in github actions i guess https://www.youtube.com/watch?v=-O3ogWBfWI0
