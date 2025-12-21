@@ -3,7 +3,7 @@ package red.jackf.jackfredlib.api.extracommandsourcedata;
 import com.mojang.brigadier.RedirectModifier;
 import com.mojang.brigadier.SingleRedirectModifier;
 import com.mojang.brigadier.tree.CommandNode;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.function.Supplier;
 
@@ -32,5 +32,5 @@ public interface ExtraSourceData<T extends ExtraSourceData<T>> {
      * @param factory Supplier for a new instance of your data class.
      * @param <T> Class of your data class.
      */
-    record Definition<T extends ExtraSourceData<T>>(ResourceLocation id, Class<T> clazz, Supplier<T> factory) { }
+    record Definition<T extends ExtraSourceData<T>>(Identifier id, Class<T> clazz, Supplier<T> factory) { }
 }

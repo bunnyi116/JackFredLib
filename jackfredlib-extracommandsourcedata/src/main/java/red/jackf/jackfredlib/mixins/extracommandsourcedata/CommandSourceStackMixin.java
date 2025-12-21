@@ -3,7 +3,7 @@ package red.jackf.jackfredlib.mixins.extracommandsourcedata;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -16,7 +16,7 @@ import java.util.Map;
 @Mixin(CommandSourceStack.class)
 public class CommandSourceStackMixin implements ExtraCommandSourceStackDataDuck {
     @Unique
-    private final Map<ResourceLocation, ExtraSourceData<?>> jflibExtraData = new HashMap<>();
+    private final Map<Identifier, ExtraSourceData<?>> jflibExtraData = new HashMap<>();
 
     @ModifyReturnValue(method = {
             "withSource",
@@ -37,7 +37,7 @@ public class CommandSourceStackMixin implements ExtraCommandSourceStackDataDuck 
     }
 
     @Override
-    public void jackfredlib$setData(Map<ResourceLocation, ExtraSourceData<?>> data) {
+    public void jackfredlib$setData(Map<Identifier, ExtraSourceData<?>> data) {
         this.jflibExtraData.clear();
         data.forEach((key, value) -> this.jflibExtraData.put(key, value.copy()));
     }
