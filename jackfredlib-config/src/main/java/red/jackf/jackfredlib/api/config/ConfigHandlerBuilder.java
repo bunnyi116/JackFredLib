@@ -71,7 +71,7 @@ public interface ConfigHandlerBuilder<T extends Config<T>> {
     ConfigHandlerBuilder<T> modifyJankson(@NotNull Consumer<Jankson.Builder> operator);
 
     /**
-     * By default, some adapters are added to Jankson in order to ease common usecases, such as {@link net.minecraft.resources.ResourceLocation}s.
+     * By default, some adapters are added to Jankson in order to ease common usecases, such as {@link net.minecraft.resources.Identifier}s.
      * This method prevents them from being registered.
      *
      * @return This config handler builder.

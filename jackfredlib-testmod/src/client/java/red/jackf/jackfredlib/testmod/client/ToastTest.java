@@ -4,7 +4,7 @@ import net.fabricmc.fabric.api.event.client.player.ClientPlayerBlockBreakEvents;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -27,7 +27,7 @@ public class ToastTest {
 
     private static final Supplier<CustomToast> TITLE_AND_MESSAGE = Memoizer.of(() -> ToastBuilder.builder(ToastFormat.DARK, literal("Test Toast"))
             .addMessage(literal("A fairly long message to stretch the toast height to get reach two slots instead of the default 1"))
-            .withIcon(ToastIcon.image(ResourceLocation.fromNamespaceAndPath("jackfredlib-testmod", "test_toast.png"), 120, 120))
+            .withIcon(ToastIcon.image(Identifier.fromNamespaceAndPath("jackfredlib-testmod", "test_toast.png"), 120, 120))
             .progressPuller(toast -> Optional.of(toast.getProgress() + 0.005f))
             .rainbowProgressBar(true)
             .build());
@@ -84,7 +84,7 @@ public class ToastTest {
             } else if (stack.is(Items.STONE_PICKAXE)) {
                 Toasts.INSTANCE.send(ToastBuilder.builder(ToastFormat.BLUE_ALERT, literal("large image"))
                         .addMessage(literal("line ".repeat(6)))
-                        .withIcon(ToastIcon.image(ResourceLocation.fromNamespaceAndPath("jackfredlib-testmod", "test_toast.png"), 2, 120, 120))
+                        .withIcon(ToastIcon.image(Identifier.fromNamespaceAndPath("jackfredlib-testmod", "test_toast.png"), 2, 120, 120))
                         .progressPuller(toast -> {
                             if (toast.getTimeVisible() > 5000L) {
                                 return Optional.of((float) (toast.getTimeVisible() - 5000L) / 5000L);

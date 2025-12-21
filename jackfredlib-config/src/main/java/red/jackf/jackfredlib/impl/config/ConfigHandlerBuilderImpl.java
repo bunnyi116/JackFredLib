@@ -4,7 +4,7 @@ import blue.endless.jankson.Jankson;
 import blue.endless.jankson.JsonGrammar;
 import blue.endless.jankson.JsonPrimitive;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
@@ -130,7 +130,7 @@ public class ConfigHandlerBuilderImpl<T extends Config<T>> implements ConfigHand
     }
 
     private void addDefaultAdapters(Jankson.Builder jankson) {
-        jankson.registerDeserializer(JsonPrimitive.class, ResourceLocation.class, ResourceLocationAdapter::deserializer);
-        jankson.registerSerializer(ResourceLocation.class, ResourceLocationAdapter::serializer);
+        jankson.registerDeserializer(JsonPrimitive.class, Identifier.class, ResourceLocationAdapter::deserializer);
+        jankson.registerSerializer(Identifier.class, ResourceLocationAdapter::serializer);
     }
 }

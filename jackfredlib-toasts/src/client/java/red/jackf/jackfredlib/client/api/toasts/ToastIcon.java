@@ -1,7 +1,7 @@
 package red.jackf.jackfredlib.client.api.toasts;
 
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import org.apache.http.util.Args;
@@ -26,7 +26,7 @@ public interface ToastIcon {
      * @param textureHeight Height of the texture being rendered.
      * @return An icon rendering the given image.
      */
-    static ToastIcon image(ResourceLocation location, int textureWidth, int textureHeight) {
+    static ToastIcon image(Identifier location, int textureWidth, int textureHeight) {
         return new ImageIcon(location, DEFAULT_SIZE, DEFAULT_SIZE, 0, 0, textureWidth, textureHeight, textureWidth, textureHeight);
     }
 
@@ -41,7 +41,7 @@ public interface ToastIcon {
      * @param textureHeight Height of the texture being rendered.
      * @return An icon rendering the given image.
      */
-    static ToastIcon image(ResourceLocation location, int toastSlots, int textureWidth, int textureHeight) {
+    static ToastIcon image(Identifier location, int toastSlots, int textureWidth, int textureHeight) {
         int size = slotsToHeight(toastSlots);
         return new ImageIcon(location, size, size, 0, 0, textureWidth, textureHeight, textureWidth, textureHeight);
     }
@@ -56,7 +56,7 @@ public interface ToastIcon {
      * @param textureHeight Height of the texture being rendered.
      * @return An icon rendering the given image.
      */
-    static ToastIcon image(ResourceLocation location, int width, int height, int textureWidth, int textureHeight) {
+    static ToastIcon image(Identifier location, int width, int height, int textureWidth, int textureHeight) {
         return new ImageIcon(location, width, height, 0, 0, textureWidth, textureHeight, textureWidth, textureHeight);
     }
 
@@ -74,7 +74,7 @@ public interface ToastIcon {
      * @param textureHeight Height of the texture being rendered.
      * @return An icon rendering the given image.
      */
-    static ToastIcon image(ResourceLocation location, int width, int height, int uOffset, int vOffset, int uWidth, int vHeight, int textureWidth, int textureHeight) {
+    static ToastIcon image(Identifier location, int width, int height, int uOffset, int vOffset, int uWidth, int vHeight, int textureWidth, int textureHeight) {
         return new ImageIcon(location, width, height, uOffset, vOffset, uWidth, vHeight, textureWidth, textureHeight);
     }
 

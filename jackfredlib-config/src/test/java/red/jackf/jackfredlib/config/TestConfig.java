@@ -1,6 +1,6 @@
 package red.jackf.jackfredlib.config;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import red.jackf.jackfredlib.api.config.Config;
 
 import java.util.*;
@@ -44,10 +44,10 @@ public class TestConfig implements Config<TestConfig> {
 
     public Pojo pojo = new Pojo();
 
-    public List<ResourceLocation> idList = new ArrayList<>(List.of(
-            ResourceLocation.withDefaultNamespace("diamond"),
-            ResourceLocation.fromNamespaceAndPath("mekanism", "steel"),
-            ResourceLocation.fromNamespaceAndPath("randomconcepts", "aquamarine")
+    public List<Identifier> idList = new ArrayList<>(List.of(
+            Identifier.withDefaultNamespace("diamond"),
+            Identifier.fromNamespaceAndPath("mekanism", "steel"),
+            Identifier.fromNamespaceAndPath("randomconcepts", "aquamarine")
     ));
 
     public Map<String, Double> map = new HashMap<>(Map.of(

@@ -2,7 +2,7 @@ package red.jackf.jackfredlib.client.impl.toasts.icon;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.apache.http.util.Args;
 import red.jackf.jackfredlib.client.api.toasts.CustomToast;
 import red.jackf.jackfredlib.client.api.toasts.ToastIcon;
@@ -13,7 +13,7 @@ import java.util.Objects;
  * Draws an image from a given path as an icon
  */
 public class ImageIcon implements ToastIcon {
-    private final ResourceLocation location;
+    private final Identifier location;
     private final int width;
     private final int height;
     private final int uOffset;
@@ -32,7 +32,7 @@ public class ImageIcon implements ToastIcon {
      * @param textureWidth Width of the whole source image.
      * @param textureHeight Height of the whole source image.
      */
-    public ImageIcon(ResourceLocation location,
+    public ImageIcon(Identifier location,
                      int width,
                      int height,
                      int uOffset,

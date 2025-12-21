@@ -186,7 +186,9 @@ public abstract class DisplayBuilder<E extends Display, B extends DisplayBuilder
      */
     public B addTranslation(Vector3f translation) {
         var transform = EntityUtils.getDisplayTransformation(this.entity);
-        EntityUtils.setDisplayTranslation(this.entity, transform.getTranslation().add(translation));
+        var result = new Vector3f(transform.getTranslation());
+        result.add(translation);
+        EntityUtils.setDisplayTranslation(this.entity, result);
         return self();
     }
 

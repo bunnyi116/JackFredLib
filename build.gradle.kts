@@ -127,8 +127,11 @@ allprojects {
             officialMojangMappings()
             parchment("org.parchmentmc.data:parchment-${properties["parchment_version"]}@zip")
         })
+        val httpCore = "org.apache.httpcomponents:httpcore:4.4.16"
+        add("modImplementation", httpCore)
         add("modImplementation", "net.fabricmc:fabric-loader:${properties["loader_version"]}")
         add("modImplementation", "net.fabricmc.fabric-api:fabric-api:${properties["fabric-api_version"]}")
+        add("include", httpCore)
 
         /*
         // add mixin extras as a depdendency to all, but only bundle on root project
@@ -213,6 +216,52 @@ tasks.getByName<RemapJarTask>("remapJar") {
 // JAVADOC //
 /////////////
 
+// Switched to a new Javadoc generation
+val aggregateJavadoc by tasks.registering(Javadoc::class) {
+    description = "Aggregated Javadoc for all JackFredLib modules"
+
+    subprojects.forEach { proj ->
+        if (proj.name == "jackfredlib-testmod") return@forEach
+
+        val main = proj.getSourceSet("main")
+        val client = proj.getSourceSet("client")
+
+        source(main.allJava)
+        source(client.allJava)
+    }
+
+    include("red/jackf/jackfredlib/api/**/*.java")
+    include("red/jackf/jackfredlib/client/api/**/*.java")
+
+    val mainCp = getSourceSet("main").compileClasspath
+    val clientCp = getSourceSet("client").compileClasspath
+
+    dependsOn(subprojects.mapNotNull { proj ->
+        if (proj.name == "jackfredlib-testmod") null
+        else proj.tasks.named("jar")
+    })
+
+    val subprojectJars = subprojects
+        .filter { it.name != "jackfredlib-testmod" }
+        .map { proj -> proj.tasks.named<Jar>("jar").flatMap { it.archiveFile } }
+
+    val janksonFiles = project(":jackfredlib-config")
+        .configurations
+        .getByName("compileClasspath")
+        .filter { it.name.contains("jankson", ignoreCase = true) }
+
+    classpath = files(mainCp, clientCp, janksonFiles) + files(subprojectJars)
+
+    (options as StandardJavadocDocletOptions).apply {
+        showFromPublic()
+        tags(
+            "apiNote:a:API Note:",
+            "implNote:a:Implementation Note:"
+        )
+    }
+}
+// Old JavaDoc generation
+/*
 tasks.withType<Javadoc>().configureEach {
     options.showFromPublic()
 
@@ -239,14 +288,15 @@ tasks.withType<Javadoc>().configureEach {
         "implNote:a:Implementation Note:"
     )
 }
+*/
 
 val javadocJarTask = tasks.register<Jar>("javadocJar") {
-    dependsOn("javadoc")
-    from(tasks.getByName<Javadoc>("javadoc").destinationDir)
+    dependsOn(aggregateJavadoc)
+    from(aggregateJavadoc.get().destinationDir)
     archiveClassifier = "javadoc"
 }
 
-tasks.getByName("build").dependsOn(javadocJarTask)
+tasks.getByName("build").dependsOn(aggregateJavadoc)
 
 ////////////////
 // PUBLISHING //
