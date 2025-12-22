@@ -93,7 +93,7 @@ abstract class GenerateChangelogTask : DefaultTask() {
         }
 
         val stream = ByteArrayOutputStream()
-        execOperations.get().exec {
+        execOperations.exec {
             it.commandLine = command
             it.standardOutput = stream
         }
