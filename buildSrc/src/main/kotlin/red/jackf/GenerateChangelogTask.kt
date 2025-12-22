@@ -20,7 +20,7 @@ import org.gradle.api.tasks.Internal
  */
 abstract class GenerateChangelogTask : DefaultTask() {
     @get:Inject
-    abstract val execOperations: Property<ExecOperations>
+    abstract val execOperations: ExecOperations
 
     /**
      * Previous tag to start grabbing commits from
