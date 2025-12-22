@@ -20,7 +20,6 @@ import org.gradle.api.tasks.Internal
  */
 abstract class GenerateChangelogTask : DefaultTask() {
     @get:Inject
-    @get:Internal
     abstract val execOperations: Property<ExecOperations>
 
     /**
