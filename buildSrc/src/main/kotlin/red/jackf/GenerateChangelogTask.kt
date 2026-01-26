@@ -11,7 +11,6 @@ import org.gradle.api.tasks.TaskAction
 import org.gradle.process.ExecOperations
 import java.io.ByteArrayOutputStream
 import javax.inject.Inject
-import org.gradle.api.tasks.Internal
 
 /**
  * Generates a markdown changelog from a list of commits between two tags.
@@ -20,8 +19,7 @@ import org.gradle.api.tasks.Internal
  */
 abstract class GenerateChangelogTask : DefaultTask() {
     @get:Inject
-    @get:Internal
-    abstract val execOperations: ExecOperations
+    protected abstract val execOperations: ExecOperations
 
     /**
      * Previous tag to start grabbing commits from
