@@ -13,8 +13,8 @@ import org.jetbrains.annotations.Nullable;
 import red.jackf.jackfredlib.api.lying.entity.EntityLie;
 import red.jackf.jackfredlib.impl.lying.LieImpl;
 import red.jackf.jackfredlib.impl.lying.LieManager;
-import red.jackf.jackfredlib.impl.lying.compat.imm_ptl.Compatibility;
-import red.jackf.jackfredlib.impl.lying.compat.imm_ptl.ImmersivePortalsCompat;
+//import red.jackf.jackfredlib.impl.lying.compat.imm_ptl.Compatibility;
+//import red.jackf.jackfredlib.impl.lying.compat.imm_ptl.ImmersivePortalsCompat;
 import red.jackf.jackfredlib.impl.lying.faketeams.FakeTeamManager;
 import red.jackf.jackfredlib.impl.lying.faketeams.FakeTeamUtil;
 
@@ -150,11 +150,11 @@ public class EntityLieImpl<E extends Entity> extends LieImpl implements EntityLi
     }
 
     public void tick(ServerPlayer player) {
-        if (Compatibility.IMM_PTL) {
+        /*if (Compatibility.IMM_PTL) {
             ImmersivePortalsCompat.runWrapped((ServerLevel) this.entity.level(), this.serverEntity::sendChanges);
         } else {
             this.serverEntity.sendChanges();
-        }
+        }*/
         if (this.tickCallback != null)
             this.tickCallback.onTick(player, this);
     }

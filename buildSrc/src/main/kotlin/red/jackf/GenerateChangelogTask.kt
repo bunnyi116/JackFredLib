@@ -21,7 +21,7 @@ import org.gradle.api.tasks.Internal
 abstract class GenerateChangelogTask : DefaultTask() {
     @get:Inject
     @get:Internal
-    abstract val execOperations: Property<ExecOperations>
+    abstract val execOperations: ExecOperations
 
     /**
      * Previous tag to start grabbing commits from
@@ -94,7 +94,7 @@ abstract class GenerateChangelogTask : DefaultTask() {
         }
 
         val stream = ByteArrayOutputStream()
-        execOperations.get().exec {
+        execOperations.exec {
             it.commandLine = command
             it.standardOutput = stream
         }

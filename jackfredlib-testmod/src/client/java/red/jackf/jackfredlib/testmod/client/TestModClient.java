@@ -13,7 +13,7 @@ import red.jackf.jackfredlib.impl.base.LogUtil;
 import red.jackf.jackfredlib.testmod.client.colour.ClosestColourScreen;
 import red.jackf.jackfredlib.testmod.client.colour.ColourTestScreen;
 
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
 
 public class TestModClient implements ClientModInitializer {
     public static final Logger LOGGER = LogUtil.getLogger("testmod-client");

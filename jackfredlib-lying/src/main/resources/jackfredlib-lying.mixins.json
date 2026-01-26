@@ -9,7 +9,6 @@
     "entity.DisplayAccessor",
     "entity.InteractionAccessor",
     "entity.ItemDisplayAccessor",
-    "entity.ServerboundInteractPacketAccessor",
     "entity.ServerGamePacketListenerImplMixin",
     "entity.TextDisplayAccessor",
     "entityglow.ChunkMapTrackedEntityMixin",

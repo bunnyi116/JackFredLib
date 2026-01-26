@@ -42,13 +42,25 @@ repositories {
     mavenCentral()
 }
 
+@Suppress("UNCHECKED_CAST")
+val moduleDependencies = rootProject.extra["moduleDependencies"] as (Project, List<String>, Boolean) -> Unit
+
+moduleDependencies(
+    project,
+    listOf(
+        "jackfredlib-base",
+        "jackfredlib-colour",
+        "jackfredlib-extracommandsourcedata",
+        "jackfredlib-gps",
+        "jackfredlib-lying",
+        "jackfredlib-toasts",
+        "jackfredlib-config"
+    ),
+    false
+)
+
 dependencies {
-    add("api", project(path=rootProject.path, configuration = "namedElements"))
-    add("api", project(path=":jackfredlib-config", configuration = "namedElements"))
-    rootProject.allprojects.forEach {
-        if (it.name == "jackfredlib-testmod") return@forEach
-        add("clientImplementation", it.extensions.getByType(SourceSetContainer::class)["client"].output)
-    }
+    implementation(rootProject)
 
     implementation("blue.endless:jankson:${properties["jankson_version"]}")
     implementation("commons-io:commons-io:${properties["commons_io_version"]}")
@@ -57,7 +69,7 @@ dependencies {
 }
 
 tasks.withType<JavaCompile>().configureEach {
-    options.release.set(17)
+    options.release.set(21)
 }
 
 tasks.test {

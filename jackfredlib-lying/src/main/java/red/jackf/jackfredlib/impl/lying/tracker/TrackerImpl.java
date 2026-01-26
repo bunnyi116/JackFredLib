@@ -71,7 +71,7 @@ public class TrackerImpl<L extends Lie> implements Tracker<L> {
 
             var shouldView = new HashSet<ServerPlayer>();
 
-            for (ServerPlayer player : PlayerLookup.world(this.level)) {
+            for (ServerPlayer player : PlayerLookup.level(this.level)) {
                 if (!this.playerPredicate.test(player)) continue;
                 if (!this.positionPredicate.test(player.getPosition(1))) continue;
                 shouldView.add(player);

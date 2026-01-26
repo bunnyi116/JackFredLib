@@ -2,13 +2,12 @@
 
 import com.github.breadmoirai.githubreleaseplugin.GithubReleaseTask
 import net.fabricmc.loom.api.LoomGradleExtensionAPI
-import net.fabricmc.loom.task.RemapJarTask
 import org.ajoberstar.grgit.Grgit
 import red.jackf.GenerateChangelogTask
 import red.jackf.UpdateDependenciesTask
 
 plugins {
-    id("fabric-loom") version "1.14-SNAPSHOT" apply false
+    id("net.fabricmc.fabric-loom") version "1.15-SNAPSHOT" apply false
     id("com.github.breadmoirai.github-release") version "2.4.1" apply false
     id("org.ajoberstar.grgit") version "5.2.1"
     id("maven-publish")
@@ -27,9 +26,10 @@ operator fun Any?.unaryPlus() = this!!.toString()
 
 // Adapted from Fabric API; helper for depending on other modules
 extra["moduleDependencies"] = fun(project: Project, depNames: List<String>, include: Boolean) {
-    val deps = depNames.map { project.dependencies.project(path = ":$it", configuration = "namedElements") }
-    val clientOutputs =
-        depNames.map { project(":$it").getSourceSet("client").output }
+    val deps = depNames.map {
+        project.dependencies.project(path = ":$it")
+    }
+    val clientOutputs = depNames.map { project(":$it").getSourceSet("client").output }
 
     project.dependencies {
         deps.forEach {
@@ -78,7 +78,7 @@ subprojects {
 allprojects {
     group = properties["maven_group"]!!
 
-    apply(plugin = "fabric-loom")
+    apply(plugin = "net.fabricmc.fabric-loom")
 
     tasks.withType<JavaCompile> {
         options.compilerArgs.add("-Xlint:unchecked")
@@ -119,18 +119,16 @@ allprojects {
         mavenCentral()
     }
 
-    val loom = project.extensions.getByType<LoomGradleExtensionAPI>()
-
     dependencies {
         add("minecraft", "com.mojang:minecraft:${properties["minecraft_version"]}")
-        add("mappings", loom.layered {
+        /*add("mappings", loom.layered {
             officialMojangMappings()
             parchment("org.parchmentmc.data:parchment-${properties["parchment_version"]}@zip")
-        })
+        })*/
         val httpCore = "org.apache.httpcomponents:httpcore:4.4.16"
-        add("modImplementation", httpCore)
-        add("modImplementation", "net.fabricmc:fabric-loader:${properties["loader_version"]}")
-        add("modImplementation", "net.fabricmc.fabric-api:fabric-api:${properties["fabric-api_version"]}")
+        add("implementation", httpCore)
+        add("implementation", "net.fabricmc:fabric-loader:${properties["loader_version"]}")
+        add("implementation", "net.fabricmc.fabric-api:fabric-api:${properties["fabric-api_version"]}")
         add("include", httpCore)
 
         /*
@@ -176,24 +174,14 @@ allprojects {
 // PACKAGING MAIN JAR //
 ////////////////////////
 
-dependencies {
-    afterEvaluate {
-        subprojects.forEach {
-            if (it.name == "jackfredlib-testmod") return@forEach
-            if (it.name == "jackfredlib-config") return@forEach
+subprojects {
+    if (name == "jackfredlib-testmod") return@subprojects
 
-            add("api", project(path = it.path, configuration = "namedElements"))
-            add("clientImplementation", it.getSourceSet("client").output)
-        }
+    rootProject.tasks.named<Jar>("jar") {
+        dependsOn(tasks.named("jar"))
     }
-}
 
-subprojects.forEach {
-    if (it.name == "jackfredlib-testmod") return@forEach
-
-    tasks.getByName<RemapJarTask>("remapJar").dependsOn("${it.path}:remapJar")
-
-    it.tasks.getByName<ProcessResources>("processResources") {
+    tasks.named<ProcessResources>("processResources") {
         from(rootProject.file("src/main/resources/assets/jackfredlib/icon.png")) {
             into("assets/jackfredlib")
         }
@@ -201,13 +189,23 @@ subprojects.forEach {
 }
 
 // bundle modules
-tasks.getByName<RemapJarTask>("remapJar") {
-    afterEvaluate {
-        subprojects.forEach {
-            if (it.name == "jackfredlib-testmod") return@forEach
-            if (it.name == "jackfredlib-config") return@forEach
+tasks.named<Jar>("jar") {
+    subprojects.forEach {
+        if (it.name == "jackfredlib-testmod") return@forEach
+        if (it.name == "jackfredlib-config") return@forEach
 
-            nestedJars.from(it.tasks.getByName("remapJar"))
+        dependsOn(it.tasks.named("jar"))
+    }
+
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
+    doFirst {
+        subprojects.forEach { subproj ->
+            if (subproj.name == "jackfredlib-testmod") return@forEach
+            if (subproj.name == "jackfredlib-config") return@forEach
+
+            val jarTask = subproj.tasks.named<Jar>("jar").get()
+            from(zipTree(jarTask.archiveFile.get().asFile))
         }
     }
 }
@@ -420,16 +418,16 @@ if (canPublish) {
         releaseName = "${properties["mod_name"]} $newTagVal"
         targetCommitish = grgit!!.branch.current().name
         releaseAssets.from(
-            tasks["remapJar"].outputs.files,
-            tasks["remapSourcesJar"].outputs.files,
+            tasks["jar"].outputs.files,
+            tasks["sourcesJar"].outputs.files,
             tasks["javadocJar"].outputs.files,
         )
         subprojects.forEach {
             if (it.name == "jackfredlib-testmod") return@forEach
 
             releaseAssets.from(
-                it.tasks["remapJar"].outputs.files,
-                it.tasks["remapSourcesJar"].outputs.files,
+                it.tasks["jar"].outputs.files,
+                it.tasks["sourcesJar"].outputs.files,
             )
         }
         body = if (generateChangelogTask != null) {

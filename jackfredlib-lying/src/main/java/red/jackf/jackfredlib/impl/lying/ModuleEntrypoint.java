@@ -5,7 +5,7 @@ import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLevelEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
@@ -24,7 +24,7 @@ public class ModuleEntrypoint implements ModInitializer {
 		// Lying
 		ServerLifecycleEvents.SERVER_STARTED.register(DebrisImpl.INSTANCE::init);
 
-		ServerTickEvents.END_WORLD_TICK.register(TrackerRunner::tickLevel);
+		ServerTickEvents.END_LEVEL_TICK.register(TrackerRunner::tickLevel);
 
 		ServerTickEvents.END_SERVER_TICK.register(s -> {
 			LieManager.INSTANCE.tick();
@@ -39,10 +39,10 @@ public class ModuleEntrypoint implements ModInitializer {
 
 		ServerPlayerEvents.AFTER_RESPAWN.register((oldPlayer, newPlayer, alive) -> LieManager.INSTANCE.migratePlayerInstance(oldPlayer, newPlayer));
 
-		ServerWorldEvents.LOAD.register((server, level) -> {
+        ServerLevelEvents.LOAD.register((server, level) -> {
 			TrackerRunner.loadLevel(level);
 		});
-		ServerWorldEvents.UNLOAD.register((server, level) -> {
+        ServerLevelEvents.UNLOAD.register((server, level) -> {
 			TrackerRunner.unloadLevel(level);
 		});
 	}

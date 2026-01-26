@@ -22,37 +22,34 @@ import java.util.Optional;
  * <p>See {@link red.jackf.jackfredlib.api.lying.entity.EntityLie.Builder}</p>
  */
 @Mixin(ServerGamePacketListenerImpl.class)
-public class ServerGamePacketListenerImplMixin {
-    @Shadow public ServerPlayer player;
+public abstract class ServerGamePacketListenerImplMixin {
+    @Shadow
+    public ServerPlayer player;
 
-    @Inject(method = "handleInteract",
-            at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerPlayer;setShiftKeyDown(Z)V", shift = At.Shift.AFTER),
-            locals = LocalCapture.CAPTURE_FAILHARD)
-    private void handleFakeEntities(ServerboundInteractPacket packet, CallbackInfo ci, final ServerLevel serverLevel, final Entity entity) {
-        if (entity == null) {
-            final int entityId = ((ServerboundInteractPacketAccessor) packet).jflib$getEntityId();
-            packet.dispatch(new ServerboundInteractPacket.Handler() {
+    @Inject(
+            method = "handleInteract",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/server/level/ServerPlayer;setShiftKeyDown(Z)V",
+                    shift = At.Shift.AFTER
+            ),
+            locals = LocalCapture.CAPTURE_FAILHARD
+    )
+    private void handleFakeEntities(ServerboundInteractPacket packet, CallbackInfo ci, ServerLevel level, Entity target) {
+        if (target == null) {
+            final int entityId = packet.entityId();
+            final InteractionHand hand = packet.hand();
+            final Vec3 location = packet.location();
+            final boolean usingSecondaryAction = packet.usingSecondaryAction();
 
-                @Override
-                public void onAttack() {
-                    LieManager.INSTANCE.getEntityLieFromId(player, entityId)
-                            .ifPresent(entityLie -> {
-                                Vec3 from = player.getEyePosition();
-                                Vec3 to = from.add(player.getLookAngle().scale(6));
-                                Optional<Vec3> collision = entityLie.entity().getBoundingBox().clip(from, to);
-                                collision.ifPresent(vec3 -> entityLie.leftClick(player, packet.isUsingSecondaryAction(), vec3));
-                            });
-                }
-
-                @Override
-                public void onInteraction(InteractionHand hand) {
-                    // no op, handle right clicks in onInteraction(InteractionHand, Vec3)
-                }
-
-                @Override
-                public void onInteraction(InteractionHand hand, Vec3 interactionLocation) {
-                    LieManager.INSTANCE.getEntityLieFromId(player, entityId)
-                            .ifPresent(entityLie -> entityLie.rightClick(player, packet.isUsingSecondaryAction(), hand, interactionLocation));
+            LieManager.INSTANCE.getEntityLieFromId(player, entityId).ifPresent(entityLie -> {
+                if (location != null) {
+                    entityLie.rightClick(player, usingSecondaryAction, hand, location);
+                } else {
+                    Vec3 from = player.getEyePosition();
+                    Vec3 to = from.add(player.getLookAngle().scale(6));
+                    Optional<Vec3> collision = entityLie.entity().getBoundingBox().clip(from, to);
+                    collision.ifPresent(vec3 -> entityLie.leftClick(player, usingSecondaryAction, vec3));
                 }
             });
         }
