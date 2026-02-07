@@ -3,7 +3,7 @@ package red.jackf.jackfredlib.client.impl.toasts;
 import com.mojang.blaze3d.platform.NativeImage;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import red.jackf.jackfredlib.client.api.toasts.ToastIcon;
@@ -61,7 +61,7 @@ public class ModUtils {
             // trim assets/{modid}/; shouldn't cause issues but if it does we'll return null
             var trimmedPath = iconPath.replace("assets/%s/".formatted(modid), "");
 
-            var icon = ToastIcon.image(ResourceLocation.fromNamespaceAndPath(modid, trimmedPath), image.getWidth(), image.getHeight());
+            var icon = ToastIcon.image(Identifier.fromNamespaceAndPath(modid, trimmedPath), image.getWidth(), image.getHeight());
             LOGGER.debug("Caching spec {}:{} ({}x{})", modid, iconPath, image.getWidth(), image.getHeight());
             return icon;
         } catch (IOException ex) {

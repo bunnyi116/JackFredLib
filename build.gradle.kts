@@ -8,9 +8,9 @@ import red.jackf.GenerateChangelogTask
 import red.jackf.UpdateDependenciesTask
 
 plugins {
-    id("fabric-loom") version "1.9-SNAPSHOT" apply false
+    id("fabric-loom") version "1.14-SNAPSHOT" apply false
     id("com.github.breadmoirai.github-release") version "2.4.1" apply false
-    id("org.ajoberstar.grgit") version "5.0.+"
+    id("org.ajoberstar.grgit") version "5.2.1"
     id("maven-publish")
 }
 
@@ -127,8 +127,11 @@ allprojects {
             officialMojangMappings()
             parchment("org.parchmentmc.data:parchment-${properties["parchment_version"]}@zip")
         })
+        val httpCore = "org.apache.httpcomponents:httpcore:4.4.16"
+        add("modImplementation", httpCore)
         add("modImplementation", "net.fabricmc:fabric-loader:${properties["loader_version"]}")
         add("modImplementation", "net.fabricmc.fabric-api:fabric-api:${properties["fabric-api_version"]}")
+        add("include", httpCore)
 
         /*
         // add mixin extras as a depdendency to all, but only bundle on root project
@@ -144,18 +147,23 @@ allprojects {
     // PACKAGING //
     ///////////////
 
-    tasks.withType<ProcessResources>().configureEach {
-        inputs.property("module_version", version)
-        inputs.property("module_name", +properties["module_name"])
-        inputs.property("module_description", +properties["module_description"])
+    val moduleName = project.properties["module_name"]?.toString() ?: "jackfredlib"
+    val moduleDescription = project.properties["module_description"]?.toString() ?: "Library for WhereIsIt"
+    val rootModuleName = rootProject.properties["module_name"]?.toString() ?: "WhereIsIt"
+    val rootModuleDescription = rootProject.properties["module_description"]?.toString() ?: "WhereIsIt project"
 
-        inputs.property("root_module_name", +rootProject.properties["module_name"])
-        inputs.property("root_module_description", +rootProject.properties["module_description"])
+    tasks.withType<ProcessResources>().configureEach {
+        inputs.property("module_version", project.version)
+        inputs.property("module_name", moduleName)
+        inputs.property("module_description", moduleDescription)
+        inputs.property("root_module_name", rootModuleName)
+        inputs.property("root_module_description", rootModuleDescription)
 
         filesMatching("fabric.mod.json") {
             expand(inputs.properties)
         }
     }
+
 
     tasks.named<Jar>("jar") {
         from(rootProject.file("LICENSE")) {
@@ -208,6 +216,52 @@ tasks.getByName<RemapJarTask>("remapJar") {
 // JAVADOC //
 /////////////
 
+// Switched to a new Javadoc generation
+val aggregateJavadoc by tasks.registering(Javadoc::class) {
+    description = "Aggregated Javadoc for all JackFredLib modules"
+
+    subprojects.forEach { proj ->
+        if (proj.name == "jackfredlib-testmod") return@forEach
+
+        val main = proj.getSourceSet("main")
+        val client = proj.getSourceSet("client")
+
+        source(main.allJava)
+        source(client.allJava)
+    }
+
+    include("red/jackf/jackfredlib/api/**/*.java")
+    include("red/jackf/jackfredlib/client/api/**/*.java")
+
+    val mainCp = getSourceSet("main").compileClasspath
+    val clientCp = getSourceSet("client").compileClasspath
+
+    dependsOn(subprojects.mapNotNull { proj ->
+        if (proj.name == "jackfredlib-testmod") null
+        else proj.tasks.named("jar")
+    })
+
+    val subprojectJars = subprojects
+        .filter { it.name != "jackfredlib-testmod" }
+        .map { proj -> proj.tasks.named<Jar>("jar").flatMap { it.archiveFile } }
+
+    val janksonFiles = project(":jackfredlib-config")
+        .configurations
+        .getByName("compileClasspath")
+        .filter { it.name.contains("jankson", ignoreCase = true) }
+
+    classpath = files(mainCp, clientCp, janksonFiles) + files(subprojectJars)
+
+    (options as StandardJavadocDocletOptions).apply {
+        showFromPublic()
+        tags(
+            "apiNote:a:API Note:",
+            "implNote:a:Implementation Note:"
+        )
+    }
+}
+// Old JavaDoc generation
+/*
 tasks.withType<Javadoc>().configureEach {
     options.showFromPublic()
 
@@ -234,14 +288,15 @@ tasks.withType<Javadoc>().configureEach {
         "implNote:a:Implementation Note:"
     )
 }
+*/
 
 val javadocJarTask = tasks.register<Jar>("javadocJar") {
-    dependsOn("javadoc")
-    from(tasks.getByName<Javadoc>("javadoc").destinationDir)
+    dependsOn(aggregateJavadoc)
+    from(aggregateJavadoc.get().destinationDir)
     archiveClassifier = "javadoc"
 }
 
-tasks.getByName("build").dependsOn(javadocJarTask)
+tasks.getByName("build").dependsOn(aggregateJavadoc)
 
 ////////////////
 // PUBLISHING //
@@ -253,11 +308,11 @@ fun setupRepositories(repos: RepositoryHandler) {
 
     if (canPublish) {
         repos.maven {
-            name = "JackFred-Maven"
-            url = uri("https://maven.jackf.red/releases")
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/ponuing/JackFredLib")
             credentials {
-                username = System.getenv("JACKFRED_MAVEN_USER")
-                password = System.getenv("JACKFRED_MAVEN_PASS")
+                username = System.getenv("GITHUB_ACTOR")
+                password = System.getenv("GITHUB_TOKEN")
             }
         }
     }
@@ -291,19 +346,18 @@ allprojects {
                     }
                     developers {
                         developer {
-                            url = "https://jackf.red"
-                            name = "JackFred2"
+                            url = "https://github.com/ponuing"
+                            name = "ponuing"
                         }
                     }
                     scm {
-                        connection = "scm:git:git://github.com/JackFred2/JackFredLib.git"
-                        developerConnection = "scm:git:git://github.com/JackFred2/JackFredLib.git"
+                        connection = "scm:git:git://github.com/ponuing/JackFredLib.git"
+                        developerConnection = "scm:git:git://github.com/ponuing/JackFredLib.git"
                         url = +propertiesHandle["github_url"]
                     }
                 }
             }
         }
-
         setupRepositories(repositories)
     }
 }

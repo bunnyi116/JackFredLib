@@ -8,7 +8,7 @@ import com.mojang.brigadier.tree.LiteralCommandNode;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import red.jackf.jackfredlib.api.extracommandsourcedata.ESD;
 import red.jackf.jackfredlib.api.extracommandsourcedata.ExtraSourceData;
 
@@ -20,7 +20,7 @@ import static net.minecraft.commands.Commands.literal;
 
 public class RepeatableArgumentsTest {
     private static final ExtraSourceData.Definition<MutliArgData> DEFINITION = new ExtraSourceData.Definition<>(
-            ResourceLocation.fromNamespaceAndPath("jackfredlib-testmod", "repeated_args"),
+            Identifier.fromNamespaceAndPath("jackfredlib-testmod", "repeated_args"),
             MutliArgData.class,
             MutliArgData::new
     );

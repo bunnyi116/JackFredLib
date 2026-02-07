@@ -1,16 +1,16 @@
 package red.jackf.jackfredlib.client.api.toasts;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 /**
  * Specifies a background texture, padding settings and text colours for a toast.
  */
-public record ToastFormat(ResourceLocation texture,
+public record ToastFormat(Identifier texture,
                           int titleColour,
                           int messageColour,
                           int progressBarColour) {
-    private static ResourceLocation tex(String path) {
-        return ResourceLocation.fromNamespaceAndPath("jackfredlib-toasts", path);
+    private static Identifier tex(String path) {
+        return Identifier.fromNamespaceAndPath("jackfredlib-toasts", path);
     }
 
     /**
