@@ -174,6 +174,16 @@ allprojects {
 // PACKAGING MAIN JAR //
 ////////////////////////
 
+dependencies {
+    subprojects.forEach {
+        if (it.name == "jackfredlib-testmod") return@forEach
+
+        add("api", project(path = it.path))
+        add("clientImplementation", project(path = it.path))
+        add("include", project(path = it.path))
+    }
+}
+
 subprojects {
     if (name == "jackfredlib-testmod") return@subprojects
 
@@ -184,28 +194,6 @@ subprojects {
     tasks.named<ProcessResources>("processResources") {
         from(rootProject.file("src/main/resources/assets/jackfredlib/icon.png")) {
             into("assets/jackfredlib")
-        }
-    }
-}
-
-// bundle modules
-tasks.named<Jar>("jar") {
-    subprojects.forEach {
-        if (it.name == "jackfredlib-testmod") return@forEach
-        if (it.name == "jackfredlib-config") return@forEach
-
-        dependsOn(it.tasks.named("jar"))
-    }
-
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-
-    doFirst {
-        subprojects.forEach { subproj ->
-            if (subproj.name == "jackfredlib-testmod") return@forEach
-            if (subproj.name == "jackfredlib-config") return@forEach
-
-            val jarTask = subproj.tasks.named<Jar>("jar").get()
-            from(zipTree(jarTask.archiveFile.get().asFile))
         }
     }
 }
