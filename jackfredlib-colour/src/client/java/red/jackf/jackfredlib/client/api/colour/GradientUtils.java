@@ -1,7 +1,7 @@
 package red.jackf.jackfredlib.client.api.colour;
 
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.util.Mth;
 import org.joml.Matrix3x2f;
 import red.jackf.jackfredlib.api.colour.Colour;
@@ -20,7 +20,7 @@ public class GradientUtils {
      * <p>Both <code>gradientStart</code> and <code>gradientEnd</code> can be outside the range [0,1). As it is sampled
      * along the range [0,1), this effectively means that the gradient can be repeated. For example, a start of
      * <code>0.0f</code> and an end of <code>3.0f</code> will draw the gradient looping 3 times.</p>
-     * @param graphics {@link GuiGraphics} object to draw the gradient with
+     * @param graphics {@link GuiGraphicsExtractor} object to draw the gradient with
      * @param x X coordinate of the top left corner of the gradient to draw
      * @param y Y coordinate of the top left corner of the gradient to draw
      * @param width Width of the gradient to draw
@@ -29,7 +29,7 @@ public class GradientUtils {
      * @param gradientStart Point of the gradient to start sampling at.
      * @param gradientEnd Point of the gradient to end sampling at.
      */
-    public static void drawHorizontalGradient(GuiGraphics graphics, int x, int y, int width, int height, Gradient gradient, float gradientStart, float gradientEnd) {
+    public static void drawHorizontalGradient(GuiGraphicsExtractor graphics, int x, int y, int width, int height, Gradient gradient, float gradientStart, float gradientEnd) {
         if (gradientStart == gradientEnd) {
             graphics.fill(x, y, x + width, y + height, gradient.sample(gradientStart).toARGB());
             return;
@@ -55,7 +55,7 @@ public class GradientUtils {
      * <p>Both <code>gradientStart</code> and <code>gradientEnd</code> can be outside the range [0,1). As it is sampled
      * along the range [0,1), this effectively means that the gradient can be repeated. For example, a start of
      * <code>0.0f</code> and an end of <code>3.0f</code> will draw the gradient looping 3 times.</p>
-     * @param graphics {@link GuiGraphics} object to draw the gradient with
+     * @param graphics {@link GuiGraphicsExtractor} object to draw the gradient with
      * @param x X coordinate of the top left corner of the gradient to draw
      * @param y Y coordinate of the top left corner of the gradient to draw
      * @param width Width of the gradient to draw
@@ -64,7 +64,7 @@ public class GradientUtils {
      * @param gradientStart Point of the gradient to start sampling at.
      * @param gradientEnd Point of the gradient to end sampling at.
      */
-    public static void drawVerticalGradient(GuiGraphics graphics, int x, int y, int width, int height, Gradient gradient, float gradientStart, float gradientEnd) {
+    public static void drawVerticalGradient(GuiGraphicsExtractor graphics, int x, int y, int width, int height, Gradient gradient, float gradientStart, float gradientEnd) {
         if (gradientStart == gradientEnd) {
             graphics.fill(x, y, x + width, y + height, gradient.sample(gradientStart).toARGB());
             return;

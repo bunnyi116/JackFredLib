@@ -2,7 +2,7 @@ package red.jackf.jackfredlib.client.impl.toasts;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.toasts.ToastManager;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.resources.metadata.gui.GuiMetadataSection;
@@ -118,7 +118,7 @@ public class CustomToastImpl implements CustomToast {
     }
 
     @Override
-    public void render(GuiGraphics graphics, Font font, long timeVisible) {
+    public void extractRenderState(GuiGraphicsExtractor graphics, Font font, long timeVisible) {
         var newProgress = this.progressPuller.pull(this);
         newProgress.ifPresent(this::setProgress);
 
@@ -146,14 +146,14 @@ public class CustomToastImpl implements CustomToast {
 
         // title and message
         if (messageLines.isEmpty()) {
-            graphics.drawString(font, title, textX, 12, format.titleColour(), false);
+            graphics.text(font, title, textX, 12, format.titleColour(), false);
         } else {
             int textYStart = 7;
-            graphics.drawString(font, title, textX, textYStart, format.titleColour(), false);
+            graphics.text(font, title, textX, textYStart, format.titleColour(), false);
             for (int i = 1; i <= messageLines.size(); i++) {
                 var line = messageLines.get(i - 1);
                 var textY = textYStart + (i * 11);
-                graphics.drawString(font, line, textX, textY, this.format.messageColour(), false);
+                graphics.text(font, line, textX, textY, this.format.messageColour(), false);
             }
         }
 

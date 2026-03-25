@@ -1,6 +1,6 @@
 package red.jackf.jackfredlib.client.api.toasts;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
@@ -154,7 +154,7 @@ public interface ToastIcon {
      * @param x X position of the top left corner of the toast.
      * @param y Y position of the top left corner of the toast.
      */
-    void render(CustomToast toast, GuiGraphics graphics, int x, int y);
+    void render(CustomToast toast, GuiGraphicsExtractor graphics, int x, int y);
 
     /**
      * Return the width of the icon. Used to calculate the size of the toast background.

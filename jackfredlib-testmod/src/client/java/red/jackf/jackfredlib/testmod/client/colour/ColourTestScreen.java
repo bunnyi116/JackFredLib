@@ -1,6 +1,6 @@
 package red.jackf.jackfredlib.testmod.client.colour;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import red.jackf.jackfredlib.api.colour.*;
@@ -65,9 +65,9 @@ public class ColourTestScreen extends Screen {
     }
 
     @Override
-    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-        this.renderBackground(graphics, mouseX, mouseY, partialTick);
-        super.render(graphics, mouseX, mouseY, partialTick);
+    public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
+        this.extractBackground(graphics, mouseX, mouseY, partialTick);
+        super.extractRenderState(graphics, mouseX, mouseY, partialTick);
         GradientUtils.drawHorizontalGradient(graphics, 10, 40, 410, 20, Gradients.RAINBOW, 0f, 1f);
 
         drawGradients(graphics, 10, 65, 200, 10,
@@ -114,7 +114,7 @@ public class ColourTestScreen extends Screen {
                         Gradient.LinearMode.RGB),
                 0f, 1f);
 
-        graphics.drawString(font, "RGB", 440, 85, 0xFF_FFFFFF);
+        graphics.text(font, "RGB", 440, 85, 0xFF_FFFFFF);
 
         GradientUtils.drawHorizontalGradient(graphics, 500, 105, 200, 20,
                 Gradient.linear(Colour.fromRGB(255, 0, 255),
@@ -122,7 +122,7 @@ public class ColourTestScreen extends Screen {
                         Gradient.LinearMode.HSV_SHORT),
                 0f, 1f);
 
-        graphics.drawString(font, "HSV_SHORT", 440, 110, 0xFF_FFFFFF);
+        graphics.text(font, "HSV_SHORT", 440, 110, 0xFF_FFFFFF);
 
         GradientUtils.drawHorizontalGradient(graphics, 500, 130, 200, 20,
                 Gradient.linear(Colour.fromRGB(255, 0, 255),
@@ -130,7 +130,7 @@ public class ColourTestScreen extends Screen {
                         Gradient.LinearMode.HSV_LONG),
                 0f, 1f);
 
-        graphics.drawString(font, "HSV_LONG", 440, 135, 0xFF_FFFFFF);
+        graphics.text(font, "HSV_LONG", 440, 135, 0xFF_FFFFFF);
 
         var adv = Gradient.builder()
                 .add(0f, Colours.RED)
@@ -145,7 +145,7 @@ public class ColourTestScreen extends Screen {
                 0f, 1f);
     }
 
-    private void drawGradients(GuiGraphics graphics, int x, int startY, int width, int height, Gradient... gradients) {
+    private void drawGradients(GuiGraphicsExtractor graphics, int x, int startY, int width, int height, Gradient... gradients) {
         float offset = (renderCount++ % 2400) / 2400f;
         for (int i = 0; i < gradients.length; i++)
             GradientUtils.drawHorizontalGradient(graphics, x, startY + (height + 5) * i, width, height, gradients[i], 0f - offset, 1f - offset);

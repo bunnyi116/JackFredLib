@@ -12,10 +12,10 @@ public class TransformUtil {
                                         @Nullable Vector3f scale,
                                         @Nullable Quaternionf rightRotation) {
         return new Transformation(
-                translation != null ? translation : original.getTranslation(),
-                leftRotation != null ? leftRotation : original.getLeftRotation(),
-                scale != null ? scale : original.getScale(),
-                rightRotation != null ? rightRotation : original.getRightRotation()
+                translation != null ? translation : original.translation(),
+                leftRotation != null ? leftRotation : original.leftRotation(),
+                scale != null ? scale : original.scale(),
+                rightRotation != null ? rightRotation : original.rightRotation()
         );
     }
 }
