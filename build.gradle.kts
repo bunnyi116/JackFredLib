@@ -2,6 +2,7 @@
 
 import com.github.breadmoirai.githubreleaseplugin.GithubReleaseTask
 import net.fabricmc.loom.api.LoomGradleExtensionAPI
+import net.fabricmc.loom.task.NestJarsAction
 import org.ajoberstar.grgit.Grgit
 import red.jackf.GenerateChangelogTask
 import red.jackf.UpdateDependenciesTask
@@ -177,10 +178,10 @@ allprojects {
 dependencies {
     subprojects.forEach {
         if (it.name == "jackfredlib-testmod") return@forEach
+        if (it.name == "jackfredlib-config") return@forEach
 
         add("api", project(path = it.path))
-        add("clientImplementation", project(path = it.path))
-        add("include", project(path = it.path))
+        add("clientImplementation", it.getSourceSet("client").output)
     }
 }
 
@@ -195,6 +196,18 @@ subprojects {
         from(rootProject.file("src/main/resources/assets/jackfredlib/icon.png")) {
             into("assets/jackfredlib")
         }
+    }
+}
+
+// bundle modules
+tasks.named<Jar>("jar") {
+    val rootJarTask = this
+    subprojects.forEach {
+        if (it.name == "jackfredlib-testmod") return@forEach
+        if (it.name == "jackfredlib-config") return@forEach
+
+        val subprojectJar = it.tasks.named<Jar>("jar").flatMap { jar -> jar.archiveFile }
+        NestJarsAction.addToTask(rootJarTask, project.files(subprojectJar))
     }
 }
 
