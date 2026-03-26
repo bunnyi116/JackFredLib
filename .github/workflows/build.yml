@@ -41,7 +41,7 @@ jobs:
         run: chmod +x ./gradlew
 
       - name: build & run tests
-        run: ./gradlew check build
+        run: ./gradlew check build --refresh-dependencies
 
       - name: capture build artifacts
         if: ${{ runner.os == 'Linux' }}
