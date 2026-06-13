@@ -5,6 +5,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.Vec3;
+import red.jackf.jackfredlib.api.colour.Colour;
 import org.jetbrains.annotations.Nullable;
 import red.jackf.jackfredlib.api.lying.Lie;
 import red.jackf.jackfredlib.impl.lying.entity.EntityLieImpl;
@@ -33,7 +34,7 @@ public interface EntityLie<E extends Entity> extends Lie {
      *
      * @param colour Colour to set the outline colour to. If <code>null</code>, removes the outline and the entity's
      *               glowing tag, otherwise sets the outline to the specified colour and marks the entity's glowing tag
-     *               as true. If not null but not {@link ChatFormatting#isColor()}, then defaults to white.
+     *               as true. If not null but not {@link Colour#isColor(ChatFormatting)}, then defaults to white.
      * @implNote Update's the entity's glowing tag.
      */
     void setGlowColour(@Nullable ChatFormatting colour);

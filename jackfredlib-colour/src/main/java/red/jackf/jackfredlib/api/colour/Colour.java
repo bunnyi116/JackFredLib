@@ -7,6 +7,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.item.DyeColor;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.Nullable;
 import red.jackf.jackfredlib.impl.colour.ColourImpl;
 
 /**
@@ -85,15 +86,46 @@ public interface Colour extends Gradient {
 
     /**
      * Creates a colour from a Minecraft {@link ChatFormatting} enum. Returns {@code null} if not a colour format
-     * (i.e., {@link ChatFormatting#isColor()} is false.)
+     * (i.e., {@link #isColor(ChatFormatting)} is false.)
      *
      * @param format Chat formatting to use
      * @return A colour based on the given formatting, or null if not a colour.
      */
     @Contract("null -> null")
     static Colour fromChatFormat(ChatFormatting format) {
-        //noinspection DataFlowIssue
-        return format == null || !format.isColor() ? null : Colour.fromInt(format.getColor());
+        if (format == null || !isColor(format)) return null;
+        Integer color = getColor(format);
+        return color == null ? null : Colour.fromInt(color);
+    }
+
+    public static boolean isColor(ChatFormatting format) {
+        return getColor(format) != null;
+    }
+
+    @Nullable
+    public static Integer getColor(ChatFormatting format) {
+        if (format == null) return null;
+
+        return switch (format) {
+            case BLACK -> 0x000000;
+            case DARK_BLUE -> 0x0000AA;
+            case DARK_GREEN -> 0x00AA00;
+            case DARK_AQUA -> 0x00AAAA;
+            case DARK_RED -> 0xAA0000;
+            case DARK_PURPLE -> 0xAA00AA;
+            case GOLD -> 0xFFAA00;
+            case GRAY -> 0xAAAAAA;
+            case DARK_GRAY -> 0x555555;
+            case BLUE -> 0x5555FF;
+            case GREEN -> 0x55FF55;
+            case AQUA -> 0x55FFFF;
+            case RED -> 0xFF5555;
+            case LIGHT_PURPLE -> 0xFF55FF;
+            case YELLOW -> 0xFFFF55;
+            case WHITE -> 0xFFFFFF;
+
+            case BOLD, ITALIC, UNDERLINE, STRIKETHROUGH, OBFUSCATED, RESET -> null;
+        };
     }
 
     /**

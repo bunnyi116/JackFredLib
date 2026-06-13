@@ -13,13 +13,14 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Display;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.animal.allay.Allay;
-import net.minecraft.world.entity.monster.Slime;
+import net.minecraft.world.entity.monster.cubemob.Slime;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.phys.Vec3;
 import org.apache.commons.lang3.function.TriFunction;
 import org.joml.Vector3f;
 import red.jackf.jackfredlib.api.colour.Colour;
@@ -90,7 +91,7 @@ public class LieTest {
            return EntityLie.builder(text).createAndShow(player);
         });
         ENTITY_LIES.put(Items.DIAMOND_HOE, (level, pos, player) -> {
-            var entity = EntityBuilders.generic(EntityType.ALLAY, level)
+            var entity = EntityBuilders.generic(EntityTypes.ALLAY, level)
                     .position(pos)
                     .facing(player)
                     .customName(Component.literal("Coloured Glow non-display"))
@@ -105,7 +106,7 @@ public class LieTest {
                     .createAndShow(player);
         });
         ENTITY_LIES.put(Items.GOLDEN_HOE, (level, pos, player) -> {
-            var entity = EntityBuilders.generic(EntityType.ALLAY, level)
+            var entity = EntityBuilders.generic(EntityTypes.ALLAY, level)
                     .position(pos)
                     .facing(player)
                     .alwaysRenderName(true)
@@ -118,7 +119,7 @@ public class LieTest {
                     .createAndShow(player);
         });
         ENTITY_LIES.put(Items.NETHERITE_HOE, ((level, blockPos, player) -> {
-            var entity = EntityBuilders.generic(EntityType.SLIME, level)
+            var entity = EntityBuilders.generic(EntityTypes.SLIME, level)
                     .position(blockPos)
                     .facing(player)
                     .customName(Component.literal("Tracker test"))
@@ -131,7 +132,7 @@ public class LieTest {
 
             Tracker.<EntityLie<Slime>>builder(level)
                     .addLie(lie1)
-                    .setFocus(blockPos.getCenter(), 8f)
+                    .setFocus(Vec3.atCenterOf(blockPos), 8f)
                     .addPredicate(ServerPlayer::isShiftKeyDown)
                     .setUpdateInterval(60)
                     .build(true);
@@ -172,6 +173,6 @@ public class LieTest {
     }
 
     private static ChatFormatting randomColour() {
-        return ChatFormatting.getById((int) (Math.random() * 16));
+        return ChatFormatting.values()[(int) (Math.random() * 16)];
     }
 }

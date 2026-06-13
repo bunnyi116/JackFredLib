@@ -1,7 +1,7 @@
 package red.jackf.jackfredlib.api.lying.entity.builders;
 
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.Interaction;
 import org.jetbrains.annotations.ApiStatus;
 import red.jackf.jackfredlib.api.lying.entity.EntityUtils;
@@ -16,7 +16,7 @@ public class InteractionBuilder extends BuilderBase<Interaction, InteractionBuil
      */
     @ApiStatus.Internal
     protected InteractionBuilder(ServerLevel level) {
-        super(EntityType.INTERACTION, level);
+        super(EntityTypes.INTERACTION, level);
     }
 
     /**

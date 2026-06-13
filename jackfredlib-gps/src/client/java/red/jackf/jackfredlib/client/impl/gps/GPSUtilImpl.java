@@ -6,10 +6,7 @@ import net.minecraft.client.gui.components.PlayerTabOverlay;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.numbers.NumberFormat;
 import net.minecraft.network.chat.numbers.StyledFormat;
-import net.minecraft.world.scores.DisplaySlot;
-import net.minecraft.world.scores.Objective;
-import net.minecraft.world.scores.PlayerTeam;
-import net.minecraft.world.scores.Scoreboard;
+import net.minecraft.world.scores.*;
 import org.jetbrains.annotations.Nullable;
 import red.jackf.jackfredlib.client.api.gps.PlayerListSnapshot;
 import red.jackf.jackfredlib.client.api.gps.ScoreboardSnapshot;
@@ -21,8 +18,8 @@ import java.util.Optional;
 
 public class GPSUtilImpl {
     public static PlayerListSnapshot getPlayerList() {
-        PlayerTabOverlay tabList = Minecraft.getInstance().gui.getTabList();
-        PlayerTabOverlayAccessor accessed = (PlayerTabOverlayAccessor) Minecraft.getInstance().gui.getTabList();
+        PlayerTabOverlay tabList = Minecraft.getInstance().gui.hud.getTabList();
+        PlayerTabOverlayAccessor accessed = (PlayerTabOverlayAccessor) Minecraft.getInstance().gui.hud.getTabList();
         Optional<Component> header = Optional.ofNullable(accessed.jflib$getHeader());
         Optional<Component> footer = Optional.ofNullable(accessed.jflib$getFooter());
         List<Component> names = accessed.jflib$getPlayerInfos().stream()
@@ -59,10 +56,36 @@ public class GPSUtilImpl {
         Objective obj = null;
         var playerTeam = scoreboard.getPlayerTeam(mc.player.getScoreboardName());
         if (playerTeam != null) {
-            var displaySlot = DisplaySlot.teamColorToSlot(playerTeam.getColor());
+            var displaySlot = teamColorToSlot(playerTeam.getColor());
             if (displaySlot != null) obj = scoreboard.getDisplayObjective(displaySlot);
         }
         if (obj == null) obj = scoreboard.getDisplayObjective(DisplaySlot.SIDEBAR);
         return obj;
+    }
+
+    @Nullable
+    public static DisplaySlot teamColorToSlot(Optional<TeamColor> colorOpt) {
+        if (colorOpt.isEmpty()) return null;
+
+        TeamColor color = colorOpt.get();
+
+        return switch (color) {
+            case BLACK -> DisplaySlot.TEAM_BLACK;
+            case DARK_BLUE -> DisplaySlot.TEAM_DARK_BLUE;
+            case DARK_GREEN -> DisplaySlot.TEAM_DARK_GREEN;
+            case DARK_AQUA -> DisplaySlot.TEAM_DARK_AQUA;
+            case DARK_RED -> DisplaySlot.TEAM_DARK_RED;
+            case DARK_PURPLE -> DisplaySlot.TEAM_DARK_PURPLE;
+            case GOLD -> DisplaySlot.TEAM_GOLD;
+            case GRAY -> DisplaySlot.TEAM_GRAY;
+            case DARK_GRAY -> DisplaySlot.TEAM_DARK_GRAY;
+            case BLUE -> DisplaySlot.TEAM_BLUE;
+            case GREEN -> DisplaySlot.TEAM_GREEN;
+            case AQUA -> DisplaySlot.TEAM_AQUA;
+            case RED -> DisplaySlot.TEAM_RED;
+            case LIGHT_PURPLE -> DisplaySlot.TEAM_LIGHT_PURPLE;
+            case YELLOW -> DisplaySlot.TEAM_YELLOW;
+            case WHITE -> DisplaySlot.TEAM_WHITE;
+        };
     }
 }

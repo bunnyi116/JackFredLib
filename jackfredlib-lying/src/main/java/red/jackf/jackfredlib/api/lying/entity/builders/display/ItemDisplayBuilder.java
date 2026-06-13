@@ -2,7 +2,7 @@ package red.jackf.jackfredlib.api.lying.entity.builders.display;
 
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Display;
-import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.ApiStatus;
@@ -21,7 +21,7 @@ public class ItemDisplayBuilder extends DisplayBuilder<Display.ItemDisplay, Item
      */
     @ApiStatus.Internal
     public ItemDisplayBuilder(ServerLevel level) {
-        super(EntityType.ITEM_DISPLAY, level);
+        super(EntityTypes.ITEM_DISPLAY, level);
     }
 
     /**

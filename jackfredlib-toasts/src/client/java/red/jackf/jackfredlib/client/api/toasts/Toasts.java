@@ -59,7 +59,7 @@ public class Toasts {
 
     private static final Logger LOGGER = LogUtil.getLogger("Toasts");
 
-    private final ToastManager toasts = Minecraft.getInstance().getToastManager();
+    private final ToastManager toasts = Minecraft.getInstance().gui.toastManager();
 
     private Toasts() {}
 }

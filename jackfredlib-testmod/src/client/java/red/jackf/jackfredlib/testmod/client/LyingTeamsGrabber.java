@@ -5,6 +5,7 @@ import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.resources.Identifier;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
+import net.minecraft.world.scores.TeamColor;
 
 public class LyingTeamsGrabber {
     public static void setup() {
@@ -17,9 +18,13 @@ public class LyingTeamsGrabber {
                             "Current teams (according to client):",
                             10, 25, 0xFF_FFFFFF);
                     for (var team : level.getScoreboard().getPlayerTeams()) {
+                        int color = team.getColor()
+                                .map(TeamColor::rgb)
+                                .orElse(0xFFFFFFFF);
+
                         graphics.text(Minecraft.getInstance().font,
                                 team.getName(),
-                                10, i, team.getColor().isColor() ? team.getColor().getColor() : 0xFF_FFFFFF);
+                                10, i, color);
                         i += 10;
                     }
                 });

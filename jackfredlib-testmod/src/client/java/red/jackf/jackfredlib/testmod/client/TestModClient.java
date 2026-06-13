@@ -24,12 +24,12 @@ public class TestModClient implements ClientModInitializer {
             if (true /*environment.includeIntegrated*/) {
                 dispatcher.register(Commands.literal("openColourScreen").executes(ctx -> {
                     Minecraft.getInstance()
-                            .execute(() -> Minecraft.getInstance().setScreen(new ColourTestScreen()));
+                            .execute(() -> Minecraft.getInstance().gui.setScreen(new ColourTestScreen()));
                     return 0;
                 }));
                 dispatcher.register(Commands.literal("openClosestColourScreen").executes(ctx -> {
                     Minecraft.getInstance()
-                            .execute(() -> Minecraft.getInstance().setScreen(new ClosestColourScreen()));
+                            .execute(() -> Minecraft.getInstance().gui.setScreen(new ClosestColourScreen()));
                     return 0;
                 }));
             }

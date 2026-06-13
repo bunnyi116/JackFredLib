@@ -11,6 +11,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnknownNullability;
 import red.jackf.jackfredlib.api.lying.entity.EntityUtils;
 
 /**
@@ -52,7 +53,7 @@ public abstract class BuilderBase<E extends Entity, B extends BuilderBase<E, B>>
      * @param position Position to move this entity's feet to
      * @return This builder
      */
-    public B position(Vec3 position) {
+    public B position(@UnknownNullability Vec3 position) {
         // Use Vec3 accessor methods (x(), y(), z()) and set position via setPos(double,double,double)
         // setPos is available in common mappings; if your mappings differ, adapt accordingly.
         try {
@@ -99,7 +100,7 @@ public abstract class BuilderBase<E extends Entity, B extends BuilderBase<E, B>>
      * @return This builder
      */
     public B positionCentered(BlockPos position) {
-        return positionCentered(position.getCenter());
+        return positionCentered(Vec3.atBottomCenterOf(position));
     }
 
     /**

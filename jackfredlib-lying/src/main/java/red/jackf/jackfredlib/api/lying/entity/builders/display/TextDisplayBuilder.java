@@ -5,7 +5,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Display;
-import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import org.jetbrains.annotations.ApiStatus;
 import red.jackf.jackfredlib.api.colour.Colour;
 import red.jackf.jackfredlib.mixins.lying.entity.TextDisplayAccessor;
@@ -23,7 +23,7 @@ public class TextDisplayBuilder extends DisplayBuilder<Display.TextDisplay, Text
      */
     @ApiStatus.Internal
     public TextDisplayBuilder(ServerLevel level) {
-        super(EntityType.TEXT_DISPLAY, level);
+        super(EntityTypes.TEXT_DISPLAY, level);
     }
 
     /**
